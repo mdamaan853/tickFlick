@@ -1,0 +1,145 @@
+const mysql = require('../../database')
+module.exports = ({
+    createVideo: (req, res) => {
+        if(req.file){
+            req.body.videoUrl=req.file.path
+        }
+        mysql.query(`INSERT INTO video (userId,canCommnet,videoUrl,thumbnailUrl,status,musicId,musicThumbNailUrl,hasTags,descrition,category,location,isLong,) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);`, [req.body.userId,req.body.canCommnet,req.body.videoUrl,req.body.thumbnailUrl,req.body.status,req.body.musicId,req.body.musicThumbNailUrl,req.body.hasTags,req.body.descrition,req.body.category,req.body.location,req.body.isLong], (err, data) => {
+            if (err) {
+                console.log(err)
+                res.json({
+                    success:false,
+                    msg:"error",
+                    error:err
+                })
+            } else {
+                res.json({
+                    success: true,
+                    msg: "Video uploaded",
+                    data:data
+                })
+            }
+        })
+    },
+    getAllVideo: (req,res) => {
+        mysql.query(`SELECT * FROM video ORDER BY id DESC`, [], (err, data) => {
+            if (err) {
+                 res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            res.json({
+                success:true,
+                data:data
+            })
+        })
+    },
+
+    // // get user by id 
+
+    getVideoByID: (req, res) => {
+        mysql.query("select * from `video` where `id`=?", [req.params.id], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no user found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
+            })
+        }
+        })
+    },
+    getVideoByUserID: (req, res) => {
+        mysql.query("select * from `video` where `userId`=?", [req.params.userId], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no Post found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
+            })
+        }
+        })
+    },
+    getVideoByMusicID: (req, res) => {
+        mysql.query("select * from `video` where `musicId`=?", [req.params.musicId], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no Post found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
+            })
+        }
+        })
+    },
+    updateVideo: (req, res) => {
+        if(req.file){
+            req.body.videoUrl=req.file.path
+        }
+        mysql.query(`update posts set ? where id = ?`, [
+                req.body, req.params.id
+            ],
+            (err, data) => {
+                if (err) {
+                     res.json({
+                        success:false,
+                        error:err
+                    })
+                }
+                res.json({
+                    success:true,
+                    data:data
+                })
+            }
+        );
+    },
+    deleteVideo: (req, res) => {
+        mysql.query(
+            `delete from posts where id = ? `, [req.params.id],
+            (err, data) => {
+                if (err) {
+                     res.json({
+                        success:false,
+                        error:err
+                    })
+                }
+                res.json({
+                    success:true,
+                    data:data
+                })
+            }
+        );
+    },
+})
