@@ -1,28 +1,34 @@
 const mysql = require('../../database')
 module.exports = ({
-    createVideo: (req, res) => {
-        if(req.file){
-            req.body.videoUrl=req.file.path
+    createMusic: (req, res) => {
+        if(req.files){
+            console.log(req.files)
+            if(req.files.audioFileUrl){
+                req.body.audioFileUrl=req.files.audioFileUrl[0].path
+            }
+            if(req.files.thumbnailUrl){
+                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
+            }
         }
-        mysql.query(`INSERT INTO video (userId,canCommnet,videoUrl,thumbnailUrl,status,musicId,musicThumbNailUrl,hasTags,descrition,category,location,isLong,) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);`, [req.body.userId,req.body.canCommnet,req.body.videoUrl,req.body.thumbnailUrl,req.body.status,req.body.musicId,req.body.musicThumbNailUrl,req.body.hasTags,req.body.descrition,req.body.category,req.body.location,req.body.isLong], (err, data) => {
+        mysql.query(`INSERT INTO song (createdBy,name,audioLength,audioFileUrl,thumbnailUrl,isFeatured,category) VALUES (?,?,?,?,?,?,?);`, [req.body.createdBy,req.body.name,req.body.audioLength,req.body.audioFileUrl,req.body.thumbnailUrl,req.body.isFeatured,req.body.category], (err, data) => {
             if (err) {
                 console.log(err)
                 res.json({
                     success:false,
                     msg:"error",
-                    error:err
+                    error:err.sqlMessage
                 })
             } else {
                 res.json({
                     success: true,
-                    msg: "Video uploaded",
+                    msg: "Song uploaded",
                     data:data
                 })
             }
         })
     },
-    getAllVideo: (req,res) => {
-        mysql.query(`SELECT * FROM video ORDER BY id DESC`, [], (err, data) => {
+    getAllMusic: (req,res) => {
+        mysql.query(`SELECT * FROM song ORDER BY id DESC`, [], (err, data) => {
             if (err) {
                  res.json({
                     success:false,
@@ -38,8 +44,8 @@ module.exports = ({
 
     // // get user by id 
 
-    getVideoByID: (req, res) => {
-        mysql.query("select * from `video` where `id`=?", [req.params.id], (err, data) => {
+    getMusicByID: (req, res) => {
+        mysql.query("select * from `song` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -49,7 +55,7 @@ module.exports = ({
             if(data.length == 0){
                 res.json({
                     success:true,
-                    msg:"no user found",
+                    msg:"no Song found",
                     data:data
                 })
             }else{
@@ -60,55 +66,61 @@ module.exports = ({
         }
         })
     },
-    getVideoByUserID: (req, res) => {
-        mysql.query("select * from `video` where `userId`=?", [req.params.userId], (err, data) => {
-            if (err) {
-                res.json({
-                    success:false,
-                    error:err
-                })
+    // getMusicByUserID: (req, res) => {
+    //     mysql.query("select * from `song` where `userId`=?", [req.params.userId], (err, data) => {
+    //         if (err) {
+    //             res.json({
+    //                 success:false,
+    //                 error:err
+    //             })
+    //         }
+    //         if(data.length == 0){
+    //             res.json({
+    //                 success:true,
+    //                 msg:"no Post found",
+    //                 data:data
+    //             })
+    //         }else{
+    //         res.json({
+    //             success:true,
+    //             data:data
+    //         })
+    //     }
+    //     })
+    // },
+    // getVideoByMusicID: (req, res) => {
+    //     mysql.query("select * from `video` where `musicId`=?", [req.params.musicId], (err, data) => {
+    //         if (err) {
+    //             res.json({
+    //                 success:false,
+    //                 error:err
+    //             })
+    //         }
+    //         if(data.length == 0){
+    //             res.json({
+    //                 success:true,
+    //                 msg:"no Post found",
+    //                 data:data
+    //             })
+    //         }else{
+    //         res.json({
+    //             success:true,
+    //             data:data
+    //         })
+    //     }
+    //     })
+    // },
+    updateMusic: (req, res) => {
+        if(req.files){
+            console.log(req.files)
+            if(req.files.audioFileUrl){
+                req.body.audioFileUrl=req.files.audioFileUrl[0].path
             }
-            if(data.length == 0){
-                res.json({
-                    success:true,
-                    msg:"no Post found",
-                    data:data
-                })
-            }else{
-            res.json({
-                success:true,
-                data:data
-            })
-        }
-        })
-    },
-    getVideoByMusicID: (req, res) => {
-        mysql.query("select * from `video` where `musicId`=?", [req.params.musicId], (err, data) => {
-            if (err) {
-                res.json({
-                    success:false,
-                    error:err
-                })
+            if(req.files.thumbnailUrl){
+                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
             }
-            if(data.length == 0){
-                res.json({
-                    success:true,
-                    msg:"no Post found",
-                    data:data
-                })
-            }else{
-            res.json({
-                success:true,
-                data:data
-            })
         }
-        })
-    },
-    updateVideo: (req, res) => {
-        if(req.file){
-            req.body.videoUrl=req.file.path
-        }
-        mysql.query(`update posts set ? where id = ?`, [
+        mysql.query(`update song set ? where id = ?`, [
                 req.body, req.params.id
             ],
             (err, data) => {
@@ -125,9 +137,9 @@ module.exports = ({
             }
         );
     },
-    deleteVideo: (req, res) => {
+    deleteMusic: (req, res) => {
         mysql.query(
-            `delete from posts where id = ? `, [req.params.id],
+            `delete from song where id = ? `, [req.params.id],
             (err, data) => {
                 if (err) {
                      res.json({

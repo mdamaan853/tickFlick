@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer')
 
-const {createVideo,getAllVideo,getVideoByID,getVideoByMusicID,getVideoByUserID,updateVideo,deleteVideo} = require('./music.service')
+const {createMusic,getAllMusic,getMusicByID,updateMusic,deleteMusic} = require('./music.service')
 
 const auth =require('../middleware/auth')
 
@@ -15,20 +15,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage
-}).fields([{name:"musicUrl"}])
+}).fields([{name:"audioFileUrl"},{name:"thumbnailUrl"}])
 
-router.post('/upload',upload,createVideo)
+router.post('/upload',upload,createMusic)
 
-router.get('/', getAllVideo)
+router.get('/', getAllMusic)
 
-router.get('/:id',getVideoByID)
+router.get('/:id',getMusicByID)
 
-router.get('/user/:userId',getVideoByUserID)
+// router.get('/user/:userId',getVideoByUserID)
 
-router.get('/music/:musicId',getVideoByMusicID)
+// router.get('/music/:musicId',getVideoByMusicID)
 
-router.patch('/update/:id',upload, updateVideo)
+router.patch('/update/:id',upload, updateMusic)
 
-router.delete('/delete/:id',deleteVideo)
+router.delete('/delete/:id',deleteMusic)
 
 module.exports = router

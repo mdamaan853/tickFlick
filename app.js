@@ -16,7 +16,7 @@ app.use('/user',userRouter)
 app.use('/post',postRouter)
 app.use('/comment',commentRouter)
 app.use('/video',videoRouter)
-app.use('/music',musicRouter)
+app.use('/song',musicRouter)
 
 app.listen(4000, () => {
     console.log('HTTPS Server running on port 4000');
