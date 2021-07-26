@@ -1,4 +1,5 @@
 const mysql = require('../../database')
+const {loginUser} =require('../user/user.service')
 module.exports = ({
     checkMobile: (req, res, next) => {
         console.log(req.body.phoneNo)
@@ -12,12 +13,10 @@ module.exports = ({
                 })
             }
             if (data.length > 0) {
-                return res.json({
-                    success:false,
-                    msg: "Mobile number already registred"
-                })
+                loginUser(req,res)
+                // next();
             }
-            if(data.length <= 0){
+            if (data.length <= 0) {
                 next();
             }
         })

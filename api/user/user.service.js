@@ -9,7 +9,7 @@ module.exports = ({
                 console.log(err)
                 res.json({
                     success:false,
-                    msg:"error",
+                    msg:err.sqlMessage,
                     error:err
                 })
             } else {
@@ -40,6 +40,7 @@ module.exports = ({
             if (err) {
                 res.json({
                     success:false,
+                    msg:err.sqlMessage,
                     error:err
                 });
             }else{
@@ -76,10 +77,8 @@ module.exports = ({
             })
         })
     },
-
     // // get user by id 
-
-    getUserByID: (req, res) => {
+    getUserByID:(req, res) => {
         mysql.query("select * from `users` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
