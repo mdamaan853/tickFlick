@@ -111,6 +111,12 @@ module.exports = ({
     //     })
     // },
     updateMusic: (req, res) => {
+        if(req.body && req.files == null){
+            return res.json({
+                success:false,
+                msg:"insert value to update"
+            })
+        }
         if(req.files){
             console.log(req.files)
             if(req.files.audioFileUrl){

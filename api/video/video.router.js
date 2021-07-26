@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer')
 
-const {createVideo,getAllVideo,getVideoByID,getVideoByMusicID,getVideoByUserID,updateVideo,deleteVideo} = require('./video.service')
+const {createVideo,getAllVideo,getVideoByID,getVideoByMusicID,getVideoByUserID,updateVideo,deleteVideo,getVideoByShortOrLong} = require('./video.service')
 
 const auth =require('../middleware/auth')
 
@@ -26,6 +26,8 @@ router.get('/:id',getVideoByID)
 router.get('/user/:userId',getVideoByUserID)
 
 router.get('/music/:musicId',getVideoByMusicID)
+
+router.get('/shortorlong/:isLong',getVideoByShortOrLong)
 
 router.patch('/update/:id',upload,updateVideo)
 

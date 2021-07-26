@@ -106,6 +106,12 @@ module.exports = ({
         })
     },
     updateCommments: (req, res) => {
+        if(!req.body){
+            return res.json({
+                success:false,
+                msg:"insert value to update"
+            })
+        }
         mysql.query(`update commments set ? where id = ?`, [
                 req.body, req.params.id
             ],

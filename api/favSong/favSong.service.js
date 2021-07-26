@@ -1,29 +1,25 @@
-const jwt = require('jsonwebtoken')
 const mysql = require('../../database')
 module.exports = ({
-    createPost: (req, res) => {
-        if(req.file){
-            req.body.postImage=req.file.path
-        }
-        mysql.query(`INSERT INTO posts (userId,postContent,postImage,hasImage,categoryType,location) VALUES (?,?,?,?,?,?);`, [req.body.userId,req.body.postContent,req.body.postImage,req.body.hasImage,req.body.categoryType,req.body.location], (err, data) => {
+    createFavSong: (req, res) => {
+        mysql.query(`INSERT INTO favsong (userId,songId) VALUES (?,?);`, [req.body.userId,req.body.songId], (err, data) => {
             if (err) {
                 console.log(err)
                 res.json({
                     success:false,
                     msg:"error",
-                    error:err
+                    error:err.sqlMessage
                 })
             } else {
                 res.json({
                     success: true,
-                    msg: "Post uploaded",
+                    msg: "Added to favorite",
                     data:data
                 })
             }
         })
     },
-    getAllPost: (req,res) => {
-        mysql.query(`SELECT * FROM posts ORDER BY id DESC`, [], (err, data) => {
+    getAllFavSong: (req,res) => {
+        mysql.query(`SELECT * FROM favsong ORDER BY id DESC`, [], (err, data) => {
             if (err) {
                  res.json({
                     success:false,
@@ -39,8 +35,8 @@ module.exports = ({
 
     // // get user by id 
 
-    getPostByID: (req, res) => {
-        mysql.query("select * from `posts` where `id`=?", [req.params.id], (err, data) => {
+    getFavSongByID: (req, res) => {
+        mysql.query("select * from `favsong` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -50,7 +46,7 @@ module.exports = ({
             if(data.length == 0){
                 res.json({
                     success:true,
-                    msg:"no user found",
+                    msg:"no Song found",
                     data:data
                 })
             }else{
@@ -61,8 +57,8 @@ module.exports = ({
         }
         })
     },
-    getPostByUserID: (req, res) => {
-        mysql.query("select * from `posts` where `userId`=?", [req.params.userId], (err, data) => {
+    getFavSongByUserID: (req, res) => {
+        mysql.query("select * from `favsong` where `userId`=?", [req.params.userId], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -83,17 +79,36 @@ module.exports = ({
         }
         })
     },
-    updatePost: (req, res) => {
-        if(req.body && req.file == null){
-            return res.json({
-                success:false,
-                msg:"insert value to update"
+    getFavSongBysongId: (req, res) => {
+        mysql.query("select * from `favsong` where `songId`=?", [req.params.songId], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no Post found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
             })
         }
-        if(req.file){
-            req.body.postImage=req.file.path
+        })
+    },
+    updateFavSong: (req, res) => {
+        if(!req.body){
+return res.json({
+    success:false,
+    msg:"insert value to update"
+})
         }
-        mysql.query(`update posts set ? where id = ?`, [
+        mysql.query(`update favsong set ? where id = ?`, [
                 req.body, req.params.id
             ],
             (err, data) => {
@@ -110,9 +125,9 @@ module.exports = ({
             }
         );
     },
-    deletePost: (req, res) => {
+    deleteFavSong: (req, res) => {
         mysql.query(
-            `delete from posts where id = ? `, [req.params.id],
+            `delete from favsong where id = ? `, [req.params.id],
             (err, data) => {
                 if (err) {
                      res.json({

@@ -1,39 +1,32 @@
-var fs = require("fs");
-var JSZip = require("jszip");
+const jwt = require('jsonwebtoken')
 const mysql = require('../../database')
 module.exports = ({
-    createVideo: (req, res) => {
-        if(req.files){
-            console.log(req.files)
-            if(req.files.videoUrl){
-                req.body.videoUrl=req.files.videoUrl[0].path
-            }
-            if(req.files.thumbnailUrl){
-                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
-            }
-            if(req.files.musicThumbNailUrl){
-                req.body.musicThumbNailUrl=req.files.musicThumbNailUrl[0].path
-            }
+    createMessage: (req, res) => {
+        if(req.file){
+            req.body.imageUrl=req.file.path
         }
-        mysql.query(`INSERT INTO video (userId,canCommnet,videoUrl,thumbnailUrl,status,musicId,musicThumbNailUrl,hasTags,descrition,category,location,isLong) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);`, [req.body.userId,req.body.canCommnet,req.body.videoUrl,req.body.thumbnailUrl,req.body.status,req.body.musicId,req.body.musicThumbNailUrl,req.body.hasTags,req.body.descrition,req.body.category,req.body.location,req.body.isLong], (err, data) => {
+        if(!req.file){
+            req.body.imageUrl='no image'
+        }
+        mysql.query(`INSERT INTO message (contentType,textContent,imageUrl,toUserId,fromUserId) VALUES (?,?,?,?,?);`, [req.body.contentType,req.body.textContent,req.body.imageUrl,req.body.toUserId,req.body.fromUserId], (err, data) => {
             if (err) {
                 console.log(err)
                 res.json({
                     success:false,
-                    msg:"error",
-                    error:err.sqlMessage
+                    msg:err.sqlMessage,
+                    error:err
                 })
             } else {
                 res.json({
                     success: true,
-                    msg: "Video uploaded",
+                    msg: "message send",
                     data:data
-                })
+                }) 
             }
         })
     },
-    getAllVideo: (req,res) => {
-        mysql.query(`SELECT * FROM video ORDER BY id DESC`, [], (err, data) => {
+    getAllMessage: (req,res) => {
+        mysql.query(`SELECT * FROM message ORDER BY id DESC`, [], (err, data) => {
             if (err) {
                  res.json({
                     success:false,
@@ -49,8 +42,8 @@ module.exports = ({
 
     // // get user by id 
 
-    getVideoByID: (req, res) => {
-        mysql.query("select * from `video` where `id`=?", [req.params.id], (err, data) => {
+    getMessageByID: (req, res) => {
+        mysql.query("select * from `message` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -71,8 +64,8 @@ module.exports = ({
         }
         })
     },
-    getVideoByUserID: (req, res) => {
-        mysql.query("select * from `video` where `userId`=?", [req.params.userId], (err, data) => {
+    getMessageByToUserID: (req, res) => {
+        mysql.query("select * from `message` where `toUserId`=?", [req.params.to], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -93,8 +86,8 @@ module.exports = ({
         }
         })
     },
-    getVideoByShortOrLong: (req, res) => {
-        mysql.query("select * from `video` where `isLong`=?", [req.params.isLong], (err, data) => {
+    getMessageByfromUserIdID: (req, res) => {
+        mysql.query("select * from `message` where `fromUserId`=?", [req.params.from], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -115,48 +108,14 @@ module.exports = ({
         }
         })
     },
-    getVideoByMusicID: (req, res) => {
-        mysql.query("select * from `video` where `musicId`=?", [req.params.musicId], (err, data) => {
-            if (err) {
-                res.json({
-                    success:false,
-                    error:err
-                })
-            }
-            if(data.length == 0){
-                res.json({
-                    success:true,
-                    msg:"no Post found",
-                    data:data
-                })
-            }else{
-            res.json({
-                success:true,
-                data:data
-            })
-        }
-        })
-    },
-    updateVideo: (req, res) => {
-        if(req.body && req.files == null){
+    updatemessage: (req, res) => {
+        if(!req.body){
             return res.json({
                 success:false,
                 msg:"insert value to update"
             })
         }
-        if(req.files){
-            console.log(req.files)
-            if(req.files.videoUrl){
-                req.body.videoUrl=req.files.videoUrl[0].path
-            }
-            if(req.files.thumbnailUrl){
-                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
-            }
-            if(req.files.musicThumbNailUrl){
-                req.body.musicThumbNailUrl=req.files.musicThumbNailUrl[0].             path
-            }
-        }
-        mysql.query(`update video set ? where id = ?`, [
+        mysql.query(`update message set ? where id = ?`, [
                 req.body, req.params.id
             ],
             (err, data) => {
@@ -173,9 +132,9 @@ module.exports = ({
             }
         );
     },
-    deleteVideo: (req, res) => {
+    deleteMessage: (req, res) => {
         mysql.query(
-            `delete from posts where id = ? `, [req.params.id],
+            `delete from message where id = ? `, [req.params.id],
             (err, data) => {
                 if (err) {
                      res.json({
