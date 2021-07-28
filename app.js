@@ -15,6 +15,11 @@ const favSongRouter =require('./api/favSong/favSong.router')
 const messageRouter =require('./api/message/message.router')
 const notificationRouter =require('./api/notification/notification.router')
 
+app.use('/upload/message/:id',(req,res)=> res.sendFile(__dirname + '/upload/message/'+req.params.id));
+app.use('/upload/music/:id',(req,res)=> res.sendFile(__dirname + '/upload/music/'+req.params.id));
+app.use('/upload/post/:id',(req,res)=> res.sendFile(__dirname + '/upload/post/'+req.params.id));
+app.use('/upload/video/:id',(req,res)=> res.sendFile(__dirname + '/upload/video/'+req.params.id));
+
 app.use('/user',userRouter)
 app.use('/post',postRouter)
 app.use('/comment',commentRouter)
