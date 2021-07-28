@@ -13,6 +13,7 @@ const videoRouter =require('./api/video/video.router')
 const musicRouter =require('./api/music/music.router')
 const favSongRouter =require('./api/favSong/favSong.router')
 const messageRouter =require('./api/message/message.router')
+const notificationRouter =require('./api/notification/notification.router')
 
 app.use('/user',userRouter)
 app.use('/post',postRouter)
@@ -21,6 +22,7 @@ app.use('/video',videoRouter)
 app.use('/song',musicRouter)
 app.use('/favsong',favSongRouter)
 app.use('/message',messageRouter)
+app.use('/notification',notificationRouter)
 
 app.listen(4000, () => {
     console.log('HTTPS Server running on port 4000');

@@ -180,8 +180,8 @@ INSERT INTO `song` (`id`, `createdBy`, `name`, `audioLength`, `audioFileUrl`, `t
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `fullName` varchar(50) NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `fullName` varchar(50) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `otpVerified` tinyint(1) NOT NULL,
   `fbId` varchar(200) NOT NULL,
   `fbLogin` tinyint(1) NOT NULL,
