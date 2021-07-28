@@ -19,7 +19,7 @@ app.use('/upload/message/:id',(req,res)=> res.sendFile(__dirname + '/upload/mess
 app.use('/upload/music/:id',(req,res)=> res.sendFile(__dirname + '/upload/music/'+req.params.id));
 app.use('/upload/post/:id',(req,res)=> res.sendFile(__dirname + '/upload/post/'+req.params.id));
 app.use('/upload/video/:id',(req,res)=> res.sendFile(__dirname + '/upload/video/'+req.params.id));
-
+  
 app.use('/user',userRouter)
 app.use('/post',postRouter)
 app.use('/comment',commentRouter)
