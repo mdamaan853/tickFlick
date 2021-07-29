@@ -9,11 +9,12 @@ module.exports = ({
             req.body.isCommentLike=0
         }
         if(!req.body.isLike){
-            req.body.isLike=0
+            req.body.isLike=1
         }
         if(!req.body.isReplyLike){
             req.body.isReplyLike=0
         }
+        // mysql.query(`Select * from likeanddislike where userId = ? and `)
         mysql.query(`INSERT INTO likeanddislike (userId,isPostLike,isCommentLike,isReplyLike,isLike,contentId) VALUES (?,?,?,?,?,?);`, [req.body.userId,req.body.isPostLike,req.body.isCommentLike,req.body.isReplyLike,req.body.isLike,req.body.contentId], (err, data) => {
             if (err) {
                 console.log(err)
@@ -93,28 +94,28 @@ module.exports = ({
         }
         })
     },
-    // getlikesAndDislikeByPostID: (req, res) => {
-    //     mysql.query("select * from `likeanddislike` where `contentId`=?", [req.params.postId], (err, data) => {
-    //         if (err) {
-    //             res.json({
-    //                 success:false,
-    //                 error:err
-    //             })
-    //         }
-    //         if(data.length == 0){
-    //             res.json({
-    //                 success:true,
-    //                 msg:"no Post found",
-    //                 data:data
-    //             })
-    //         }else{
-    //         res.json({
-    //             success:true,
-    //             data:data
-    //         })
-    //     }
-    //     })
-    // },
+    getlikesDlikeBycontentId: (req, res) => {
+        mysql.query(`select * from likeanddislike where contentId=?`, [req.params.contentId], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no Post found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
+            })
+        }
+        })
+    },
     updatelikesAndDislikes: (req, res) => {
         if(!req.body){
             return res.json({
