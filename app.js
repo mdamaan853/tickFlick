@@ -15,6 +15,8 @@ const favSongRouter =require('./api/favSong/favSong.router')
 const messageRouter =require('./api/message/message.router')
 const notificationRouter =require('./api/notification/notification.router')
 const likesAndDislikesRouter =require('./api/likesAndDislikes/likesAndDislikes.router')
+const followRouter =require('./api/follow/follow.router')
+const storyRouter =require('./api/story/story.router')
 
 app.use('/upload/message/:id',(req,res)=> res.sendFile(__dirname + '/upload/message/'+req.params.id));
 app.use('/upload/music/:id',(req,res)=> res.sendFile(__dirname + '/upload/music/'+req.params.id));
@@ -30,6 +32,8 @@ app.use('/favsong',favSongRouter)
 app.use('/message',messageRouter)
 app.use('/notification',notificationRouter)
 app.use('/likesanddislikes',likesAndDislikesRouter)
+app.use('/follow',followRouter)
+app.use('/story',storyRouter)
 
 app.listen(4000, () => {
     console.log('HTTPS Server running on port 4000');

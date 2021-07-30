@@ -1,21 +1,11 @@
 const jwt = require('jsonwebtoken')
 const mysql = require('../../database')
 module.exports = ({
-    createlikesAndDislike: (req, res) => {
-        if(!req.body.isPostLike){
-            req.body.isPostLike=0
-         }
-        if(!req.body.isCommentLike){
-            req.body.isCommentLike=0
+    createStory: (req, res) => {
+        if(req.file){
+            req.body.docUrl=req.file.path
         }
-        if(!req.body.isLike){
-            req.body.isLike=1
-        }
-        if(!req.body.isReplyLike){
-            req.body.isReplyLike=0
-        }
-        // mysql.query(`Select * from likeanddislike where userId = ? and `)
-        mysql.query(`INSERT INTO likes (userId,isPostLike,isCommentLike,isReplyLike,isLike,contentId) VALUES (?,?,?,?,?,?);`, [req.body.userId,req.body.isPostLike,req.body.isCommentLike,req.body.isReplyLike,req.body.isLike,req.body.contentId], (err, data) => {
+        mysql.query(`INSERT INTO stories (userId,docUrl,isImage) VALUES (?,?,?);`, [req.body.userId,req.body.docUrl,req.body.isImage], (err, data) => {
             if (err) {
                 console.log(err)
                 res.json({
@@ -26,21 +16,34 @@ module.exports = ({
             } else {
                 res.json({
                     success: true,
-                    msg: "Liked",
+                    msg: "Story uploaded",
                     data:data
                 })
             }
         })
     },
-    getAllLikesAndDislike: (req,res) => {
-        mysql.query(`SELECT * FROM likes ORDER BY id DESC`, [], (err, data) => {
+    getAllStory: (req,res) => {
+        mysql.query(`SELECT * FROM stories ORDER BY id DESC`, [], (err, data) => {
             if (err) {
                  res.json({
                     success:false,
                     error:err
                 })
             }
-            console.log(data)
+            res.json({
+                success:true,
+                data:data
+            })
+        })
+    },
+    getStoryBYFollower: (req,res) => {
+        mysql.query(`select p.* from stories p left join follow f on p.userId = f.followedUID where f.userId = ?`, [req.params.userId], (err, data) => {
+            if (err) {
+                 res.json({
+                    success:false,
+                    error:err
+                })
+            }
             res.json({
                 success:true,
                 data:data
@@ -50,8 +53,8 @@ module.exports = ({
 
     // // get user by id 
 
-    getlikesAndDislikeByID: (req, res) => {
-        mysql.query("select * from `likes` where `id`=?", [req.params.id], (err, data) => {
+    getStoryByID: (req, res) => {
+        mysql.query("select * from `stories` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -61,7 +64,7 @@ module.exports = ({
             if(data.length == 0){
                 res.json({
                     success:true,
-                    msg:"no data found",
+                    msg:"no user found",
                     data:data
                 })
             }else{
@@ -72,30 +75,8 @@ module.exports = ({
         }
         })
     },
-    getlikesAndDislikeByUserID: (req, res) => {
-        mysql.query("select * from `likes` where `userId`=?", [req.params.userId], (err, data) => {
-            if (err) {
-                res.json({
-                    success:false,
-                    error:err
-                })
-            }
-            if(data.length == 0){
-                res.json({
-                    success:true,
-                    msg:"no Post found",
-                    data:data
-                })
-            }else{
-            res.json({
-                success:true,
-                data:data
-            })
-        }
-        })
-    },
-    getlikesDlikeBycontentId: (req, res) => {
-        mysql.query(`select * from likes where contentId=?`, [req.params.contentId], (err, data) => {
+    getStoryByUserID: (req, res) => {
+        mysql.query("select * from `stories` where `userId`=?", [req.params.userId], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -116,14 +97,17 @@ module.exports = ({
         }
         })
     },
-    updatelikesAndDislikes: (req, res) => {
-        if(!req.body){
+    updateStory: (req, res) => {
+        if(req.body && req.file == null){
             return res.json({
                 success:false,
                 msg:"insert value to update"
             })
         }
-        mysql.query(`update likes set ? where id = ?`, [
+        if(req.file){
+            req.body.postImage=req.file.path
+        }
+        mysql.query(`update stories set ? where id = ?`, [
                 req.body, req.params.id
             ],
             (err, data) => {
@@ -135,15 +119,14 @@ module.exports = ({
                 }
                 res.json({
                     success:true,
-                    msg:"updated",
                     data:data
                 })
             }
         );
     },
-    deleteLikesAndDislikes: (req, res) => {
+    deleteStory: (req, res) => {
         mysql.query(
-            `delete from likes where id = ? `, [req.params.id],
+            `delete from stories where id = ? `, [req.params.id],
             (err, data) => {
                 if (err) {
                      res.json({
@@ -153,24 +136,6 @@ module.exports = ({
                 }
                 res.json({
                     success:true,
-                    data:data
-                })
-            }
-        );
-    },
-    checkLike: (req, res) => {
-        mysql.query(
-            `delete from likeanddislike where userId=? AND contentId=? `, [req.body.userId,req.body.contentId],
-            (err, data) => {
-                if (err) {
-                     res.json({
-                        success:false,
-                        error:err
-                    })
-                }
-                res.json({
-                    success:true,
-                    msg:"like delete",
                     data:data
                 })
             }

@@ -1,46 +1,31 @@
-const jwt = require('jsonwebtoken')
 const mysql = require('../../database')
 module.exports = ({
-    createlikesAndDislike: (req, res) => {
-        if(!req.body.isPostLike){
-            req.body.isPostLike=0
-         }
-        if(!req.body.isCommentLike){
-            req.body.isCommentLike=0
-        }
-        if(!req.body.isLike){
-            req.body.isLike=1
-        }
-        if(!req.body.isReplyLike){
-            req.body.isReplyLike=0
-        }
-        // mysql.query(`Select * from likeanddislike where userId = ? and `)
-        mysql.query(`INSERT INTO likes (userId,isPostLike,isCommentLike,isReplyLike,isLike,contentId) VALUES (?,?,?,?,?,?);`, [req.body.userId,req.body.isPostLike,req.body.isCommentLike,req.body.isReplyLike,req.body.isLike,req.body.contentId], (err, data) => {
+    createFollow: (req, res) => {
+        mysql.query(`INSERT INTO follow (userId,followedUID) VALUES (?,?);`, [req.body.userId,req.body.followedUID], (err, data) => {
             if (err) {
                 console.log(err)
                 res.json({
                     success:false,
-                    msg:"error",
+                    msg:err.sqlMessage,
                     error:err
                 })
             } else {
                 res.json({
                     success: true,
-                    msg: "Liked",
+                    msg: "follow",
                     data:data
                 })
             }
         })
     },
-    getAllLikesAndDislike: (req,res) => {
-        mysql.query(`SELECT * FROM likes ORDER BY id DESC`, [], (err, data) => {
+    getAllFollow: (req,res) => {
+        mysql.query(`SELECT * FROM follow ORDER BY id DESC`, [], (err, data) => {
             if (err) {
                  res.json({
                     success:false,
                     error:err
                 })
             }
-            console.log(data)
             res.json({
                 success:true,
                 data:data
@@ -50,8 +35,8 @@ module.exports = ({
 
     // // get user by id 
 
-    getlikesAndDislikeByID: (req, res) => {
-        mysql.query("select * from `likes` where `id`=?", [req.params.id], (err, data) => {
+    getFollowgByID: (req, res) => {
+        mysql.query("select * from `follow` where `id`=?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -61,7 +46,7 @@ module.exports = ({
             if(data.length == 0){
                 res.json({
                     success:true,
-                    msg:"no data found",
+                    msg:"no Song found",
                     data:data
                 })
             }else{
@@ -72,30 +57,8 @@ module.exports = ({
         }
         })
     },
-    getlikesAndDislikeByUserID: (req, res) => {
-        mysql.query("select * from `likes` where `userId`=?", [req.params.userId], (err, data) => {
-            if (err) {
-                res.json({
-                    success:false,
-                    error:err
-                })
-            }
-            if(data.length == 0){
-                res.json({
-                    success:true,
-                    msg:"no Post found",
-                    data:data
-                })
-            }else{
-            res.json({
-                success:true,
-                data:data
-            })
-        }
-        })
-    },
-    getlikesDlikeBycontentId: (req, res) => {
-        mysql.query(`select * from likes where contentId=?`, [req.params.contentId], (err, data) => {
+    getFollowByUserID: (req, res) => {
+        mysql.query("select * from `follow` where `userId`=?", [req.params.userId], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -116,14 +79,36 @@ module.exports = ({
         }
         })
     },
-    updatelikesAndDislikes: (req, res) => {
+    getFollowByfollowedUID: (req, res) => {
+        mysql.query("select * from `follow` where `followedUID`=?", [req.params.songId], (err, data) => {
+            if (err) {
+                res.json({
+                    success:false,
+                    error:err
+                })
+            }
+            if(data.length == 0){
+                res.json({
+                    success:true,
+                    msg:"no Post found",
+                    data:data
+                })
+            }else{
+            res.json({
+                success:true,
+                data:data
+            })
+        }
+        })
+    },
+    updateFollow: (req, res) => {
         if(!req.body){
-            return res.json({
-                success:false,
-                msg:"insert value to update"
-            })
+return res.json({
+    success:false,
+    msg:"insert value to update"
+})
         }
-        mysql.query(`update likes set ? where id = ?`, [
+        mysql.query(`update follow set ? where id = ?`, [
                 req.body, req.params.id
             ],
             (err, data) => {
@@ -135,15 +120,14 @@ module.exports = ({
                 }
                 res.json({
                     success:true,
-                    msg:"updated",
                     data:data
                 })
             }
         );
     },
-    deleteLikesAndDislikes: (req, res) => {
+    deleteFollow: (req, res) => {
         mysql.query(
-            `delete from likes where id = ? `, [req.params.id],
+            `delete from follow where id = ? `, [req.params.id],
             (err, data) => {
                 if (err) {
                      res.json({
@@ -153,24 +137,6 @@ module.exports = ({
                 }
                 res.json({
                     success:true,
-                    data:data
-                })
-            }
-        );
-    },
-    checkLike: (req, res) => {
-        mysql.query(
-            `delete from likeanddislike where userId=? AND contentId=? `, [req.body.userId,req.body.contentId],
-            (err, data) => {
-                if (err) {
-                     res.json({
-                        success:false,
-                        error:err
-                    })
-                }
-                res.json({
-                    success:true,
-                    msg:"like delete",
                     data:data
                 })
             }
