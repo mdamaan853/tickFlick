@@ -80,7 +80,7 @@ module.exports = ({
         })
     },
     getFollowByfollowedUID: (req, res) => {
-        mysql.query("select * from `follow` where `followedUID`=?", [req.params.songId], (err, data) => {
+        mysql.query("select * from `follow` where `followedUID`=?", [req.params.followedUID], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
@@ -90,7 +90,7 @@ module.exports = ({
             if(data.length == 0){
                 res.json({
                     success:true,
-                    msg:"no Post found",
+                    msg:"no story found",
                     data:data
                 })
             }else{

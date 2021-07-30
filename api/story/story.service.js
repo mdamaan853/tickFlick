@@ -98,7 +98,7 @@ module.exports = ({
         })
     },
     updateStory: (req, res) => {
-        if(req.body && req.file == null){
+        if(!req.body){
             return res.json({
                 success:false,
                 msg:"insert value to update"

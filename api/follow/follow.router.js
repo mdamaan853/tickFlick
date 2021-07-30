@@ -16,7 +16,7 @@ router.get('/:id',getFollowgByID)
 
 router.get('/user/:userId',getFollowByUserID)
 
-router.get('/follow/followedUID',getFollowByfollowedUID)
+router.get('/followid/:followedUID',getFollowByfollowedUID)
 
 router.patch('/update/:id',upload, updateFollow)
 
