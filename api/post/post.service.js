@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const mysql = require('../../database')
+const {getUserByID}=require('../user/user.service') 
 module.exports = ({
     createPost: (req, res) => {
         if(req.file){
@@ -62,14 +63,14 @@ module.exports = ({
         })
     },
     getPostByUserID: (req, res) => {
-        mysql.query("select * from `posts` where `userId`=?", [req.params.userId], (err, data) => {
+        mysql.query("select if(l.isLike,1,0),u.profilepic,p.* from posts p left join follow f on p.userId = f.followedUID left join likes l on f.userId = l.userId and l.contentId = p.id and l.isPostLike = 1 left join users u on u.id = p.userId where f.userId = ?", [req.params.id], (err, data) => {
             if (err) {
                 res.json({
                     success:false,
                     error:err
                 })
             }
-            if(data.length == 0){
+            if(!data){
                 res.json({
                     success:true,
                     msg:"no Post found",

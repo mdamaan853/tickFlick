@@ -23,7 +23,7 @@ router.get('/', getAllPost)
 
 router.get('/:id',getPostByID)
 
-router.get('/user/:userId',getPostByUserID)
+router.get('/user/:id',getPostByUserID)
 
 router.patch('/update/:id',auth,upload, updatePost)
 
