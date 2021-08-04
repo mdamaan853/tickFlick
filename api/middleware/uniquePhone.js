@@ -12,12 +12,15 @@ module.exports = ({
                     err: err
                 })
             }
-            if (data.length > 0) {
-                loginUser(req,res)
-                // next();
-            }
-            if (data.length <= 0) {
+            if(data){
+
+                if (data.length > 0) {
+                    loginUser(req,res)
+                    // next();
+                }
+                if (data.length <= 0) {
                 next();
+            }
             }
         })
     }
