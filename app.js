@@ -1,7 +1,12 @@
 const express = require('express');
 const cors =require('cors')
-const app = express()
+var fs = require('fs');
 const https = require("https")
+const app = express()
+
+const key = fs.readFileSync('./private.pem');
+const cert = fs.readFileSync('./cert.pem');
+
 
 app.use(cors());
 // app.use(express.json())
@@ -35,7 +40,7 @@ app.use('/likesanddislikes',likesAndDislikesRouter)
 app.use('/follow',followRouter)
 app.use('/story',storyRouter)
 
-app.listen(4000, () => {
-    console.log('HTTPS Server running on port 4000');
-});
+const server = https.createServer({key: key, cert: cert }, app);
+
+server.listen(4000, () => { console.log('listening on 4000') });
   

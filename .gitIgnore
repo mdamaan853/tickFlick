@@ -1,3 +1,5 @@
 /node_modules
 /upload
+/cert.pem
+/private.pem
 https://github.com/mdamaan853/tickFlick.git
