@@ -5,6 +5,7 @@ module.exports = ({
     createPost: (req, res) => {
         if(req.file){
             req.body.postImage=req.file.path
+            console.log(req.file)
         }
         mysql.query(`INSERT INTO posts (userId,postContent,postImage,hasImage,categoryType,location) VALUES (?,?,?,?,?,?);`, [req.body.userId,req.body.postContent,req.body.postImage,req.body.hasImage,req.body.categoryType,req.body.location], (err, data) => {
             if (err) {
