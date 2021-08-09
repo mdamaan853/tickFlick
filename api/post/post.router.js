@@ -17,7 +17,7 @@ const upload = multer({
     storage: storage
 }).single('postImage')
 
-router.post('/upload',auth,upload,createPost)
+router.post('/upload',upload,createPost)
 
 router.get('/', getAllPost)
 

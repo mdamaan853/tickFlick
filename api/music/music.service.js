@@ -4,10 +4,10 @@ module.exports = ({
         if(req.files){
             console.log(req.files)
             if(req.files.audioFileUrl){
-                req.body.audioFileUrl=req.files.audioFileUrl[0].path
+                req.body.audioFileUrl=req.files.audioFileUrl[0].destination+"/"+req.files.audioFileUrl[0].filename
             }
             if(req.files.thumbnailUrl){
-                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
+                req.body.thumbnailUrl=req.files.thumbnailUrl[0].destination+"/"+req.files.thumbnailUrl[0].filename
             }
         }
         mysql.query(`INSERT INTO song (createdBy,name,audioLength,audioFileUrl,thumbnailUrl,isFeatured,category) VALUES (?,?,?,?,?,?,?);`, [req.body.createdBy,req.body.name,req.body.audioLength,req.body.audioFileUrl,req.body.thumbnailUrl,req.body.isFeatured,req.body.category], (err, data) => {
@@ -120,10 +120,10 @@ module.exports = ({
         if(req.files){
             console.log(req.files)
             if(req.files.audioFileUrl){
-                req.body.audioFileUrl=req.files.audioFileUrl[0].path
+                req.body.audioFileUrl=req.files.audioFileUrl[0].destination+"/"+req.files.audioFileUrl[0].filename
             }
             if(req.files.thumbnailUrl){
-                req.body.thumbnailUrl=req.files.thumbnailUrl[0].path
+                req.body.thumbnailUrl=req.files.thumbnailUrl[0].destination+"/"+req.files.thumbnailUrl[0].filename
             }
         }
         mysql.query(`update song set ? where id = ?`, [

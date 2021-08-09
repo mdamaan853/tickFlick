@@ -3,7 +3,8 @@ const mysql = require('../../database')
 module.exports = ({
     createStory: (req, res) => {
         if(req.file){
-            req.body.docUrl=req.file.path
+            // req.file.destination+"/"+req.file.filename
+            req.body.docUrl=req.file.destination+"/"+req.file.filename
         }
         mysql.query(`INSERT INTO stories (userId,docUrl,isImage) VALUES (?,?,?);`, [req.body.userId,req.body.docUrl,req.body.isImage], (err, data) => {
             if (err) {
@@ -105,7 +106,7 @@ module.exports = ({
             })
         }
         if(req.file){
-            req.body.postImage=req.file.path
+            req.body.postImage=req.file.destination+"/"+req.file.filename
         }
         mysql.query(`update stories set ? where id = ?`, [
                 req.body, req.params.id
