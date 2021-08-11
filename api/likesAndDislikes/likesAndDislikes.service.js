@@ -73,7 +73,8 @@ module.exports = ({
         })
     },
     getlikesAndDislikeByUserID: (req, res) => {
-        mysql.query("select * from `likes` where `userId`=?", [req.params.userId], (err, data) => {
+            // select if(l.isLike,1,0),u.profilepic,p.* from posts p left join follow f on p.userId = f.followedUID left join likes l on f.userId = l.userId and l.contentId = p.id and l.isPostLike = 1 left join users u on u.id = p.userId where f.userId = ?
+        mysql.query(`SELECT users.username,users.profilepic,likes.* FROM users LEFT JOIN Likes ON users.id = likes.userId WHERE likes.userId=?`, [req.params.userId], (err, data) => {
             if (err) {
                 res.json({
                     success:false,

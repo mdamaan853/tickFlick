@@ -121,8 +121,8 @@ module.exports = ({
             console.log(req.files)
             if(req.files.audioFileUrl){
                 req.body.audioFileUrl=req.files.audioFileUrl[0].destination+"/"+req.files.audioFileUrl[0].filename
+                if(req.files.thumbnailUrl){
             }
-            if(req.files.thumbnailUrl){
                 req.body.thumbnailUrl=req.files.thumbnailUrl[0].destination+"/"+req.files.thumbnailUrl[0].filename
             }
         }
